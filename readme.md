@@ -48,6 +48,9 @@ def requestGET(url,param,header=None): #requests 버전.
     return {'status' : res.status_code, 'text' : res.text }
 ```
 
+### 2020-3-23
+powershell에서 zip으로 압축한후에 aws cli를 이용해서 함수를 업데이트. [update.ps1](update.ps1)  
+
 ## 새로 만든 채널 혹은 채팅방의 id를 아는 방법.
 채널이나 채팅방을 만들고 봇을 초대한다.  
 새로 만든 곳에서 아무 메세지나 입력한다.  
