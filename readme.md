@@ -33,3 +33,23 @@ https://www.bitmex.com/api/explorer/#!/OrderBook/OrderBook_getL2
 https://github.com/mthenw/awesome-layers  
 -> https://github.com/keithrozario/Klayers  
 -> https://github.com/keithrozario/Klayers/blob/master/arns/ap-northeast-2.json  
+
+## 로그
+### 2019-11-12
+단순이 get호출이여서 requests대신 빌트인된 urllib를 사용하여 라이브러리 의존도를 줄임.  
+물론 수행시간은 주로 api을 호출하고 대기하는 시간이 대부분이라서 큰 차이가 없다.  
+
+```py
+def requestGET(url,param,header=None): #requests 버전.
+    if header==None:
+        res=requests.get(url,params = param)    
+    else:
+        res=requests.get(url,params = param, headers = header)    
+    return {'status' : res.status_code, 'text' : res.text }
+```
+
+## 새로 만든 채널 혹은 채팅방의 id를 아는 방법.
+채널이나 채팅방을 만들고 봇을 초대한다.  
+새로 만든 곳에서 아무 메세지나 입력한다.  
+getUpdate로 새로 업데이트된 메시지를 받는다.  
+아까 입력한 메시지에 있는 id가 새로 만든 채널 혹은 채팅방의 id임.  
