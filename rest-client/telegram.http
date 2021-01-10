@@ -1,0 +1,96 @@
+###
+# 텔레그램 getMe
+get https://api.telegram.org/{{$dotenv botinfo}}/getMe
+
+
+###
+# 텔레그램 getUpdate
+get https://api.telegram.org/{{$dotenv botinfo}}/getUpdates
+
+
+###
+# 텔레그램 getChat
+get https://api.telegram.org/{{$dotenv botinfo}}/getChat
+    ?chat_id={{$dotenv chat_id}}
+
+    
+###
+# 텔레그램 전송 SendMessage
+get https://api.telegram.org/{{$dotenv botinfo}}/SendMessage
+    ?chat_id={{$dotenv chat_id}}
+    &text=test
+
+
+###
+# 텔레그램 전송 SendMessage post
+post https://api.telegram.org/{{$dotenv botinfo}}/SendMessage
+Content-Type: application/json
+
+{
+  "chat_id":"{{$dotenv chat_id}}",
+  "text":"post method test"
+}
+
+
+###
+# 텔레그램 전송 sendPhoto post
+post https://api.telegram.org/{{$dotenv botinfo}}/sendPhoto
+Content-Type: application/json
+
+{
+  "chat_id":"{{$dotenv chat_id}}",
+  "photo":"https://source.unsplash.com/random"
+}
+
+
+###
+# 텔레그램 전송 sendPhoto post
+post https://api.telegram.org/{{$dotenv botinfo}}/sendPhoto
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="chat_id"
+
+{{$dotenv chat_id}}
+--boundary
+Content-Disposition: form-data; name="photo"; filename="unnamed.png"
+Content-Type: image/png
+
+< ./unnamed.png
+--boundary--
+
+
+###
+# 텔레그램 전송 sendMediaGroup
+post https://api.telegram.org/{{$dotenv botinfo}}/sendMediaGroup
+Content-Type: multipart/form-data; boundary=boundary
+
+--boundary
+Content-Disposition: form-data; name="chat_id"
+
+{{$dotenv chat_id}}
+--boundary
+Content-Disposition: form-data; name="media"
+# Content-Type: application/json
+
+[
+  {
+    "type": "photo",
+    "media": "attach://unnamed1.png"
+  },
+  {
+    "type": "photo",
+    "media": "attach://unnamed2.png"
+  }
+]
+--boundary
+Content-Disposition: form-data; name="unnamed1.png"; filename="unnamed1.png"
+Content-Type: image/png
+
+< ./unnamed.png
+--boundary
+Content-Disposition: form-data; name="unnamed2.png"; filename="unnamed2.png"
+Content-Type: image/png
+
+< ./unnamed.png
+--boundary--

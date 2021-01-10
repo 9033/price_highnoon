@@ -1,0 +1,11 @@
+###
+# 업비트 비트코인/원
+get https://api.upbit.com/v1/ticker
+    ?markets=KRW-BTC
+
+
+###
+# 업비트 리플/원
+get https://api.upbit.com/v1/ticker
+    ?markets=KRW-XRP
+
