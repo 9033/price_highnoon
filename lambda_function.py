@@ -58,6 +58,18 @@ def frombitmex():
     else:
         setrets('bitmex','get price error from bitmex')
 
+def fromBinance():
+    p={'symbol':'BTCUSDT','limit':'10'}
+    url='https://api.binance.com/api/v3/trades'
+    res=reqGET(url,p)
+
+    if res['status']==200:
+        jsonRes=json.loads(res['text'])
+        avgTradePrice = sum([float(trade['price']) for trade in jsonRes]) / 10
+        setrets('binance','{:,.2f}'.format(avgTradePrice), avgTradePrice)
+    else:
+        setrets('binance','get price error from binance')
+
 def sendtoMBIN(msg):
     infojson = open("info.json","tr")
     info = json.load(infojson)
@@ -79,12 +91,11 @@ def lambda_handler(event, context):
     global rets
     
     t=threading.Thread(target=fromupbit)
-    t2=threading.Thread(target=frombitmex)
+    t3=threading.Thread(target=fromBinance)
     t.start()
-    t2.start()
+    t3.start()
     t.join()
-    t2.join()
-    
+    t3.join()
     sss=[]
     for k in rets:#결과를 합침.
         sss.append(k+' : '+(rets[k]))
