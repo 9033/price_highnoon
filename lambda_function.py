@@ -116,6 +116,17 @@ def lambda_handler(event, context):
     t.join()
     t3.join()
     t4.join()
+    
+    # 김프 구하기 (#1)
+    try:
+      KPremium = (rets['upbit']['value'] / (rets['binance']['value'] * rets['hanabank']['value'])) - 1
+      rets['K-premium']={
+        'stringify':'{:,.1f}%'.format(KPremium * 100),
+        'value':KPremium,
+      }
+    except:
+      pass
+
     sss=[]
     for k in rets:#결과를 합침.
       if rets[k]['stringify']:
