@@ -9,3 +9,24 @@ get https://api.upbit.com/v1/ticker
 get https://api.upbit.com/v1/ticker
     ?markets=KRW-XRP
 
+###
+# bitmex BTC
+get https://www.bitmex.com/api/v1/orderBook/L2
+    ?symbol=XBTUSD
+    &depth=1
+
+###
+# binance
+get https://api.binance.com/api/v3/ping
+
+###
+# binance order book
+get https://api.binance.com/api/v3/depth
+    ?symbol=BTCUSDT
+    &limit=10
+
+###
+# binance trades
+get https://api.binance.com/api/v3/trades
+    ?symbol=BTCUSDT
+    &limit=10
