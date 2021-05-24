@@ -70,6 +70,18 @@ def fromBinance():
     else:
         setrets('binance','get price error from binance')
 
+def getKRWUSD():
+    url='https://quotation-api-cdn.dunamu.com/v1/forex/recent'
+    p={'codes':'FRX.KRWUSD'}
+    res=reqGET(url,p)
+
+    if res['status']==200:
+        jsonRes=json.loads(res['text'])
+        value = float(jsonRes[0]['basePrice'])
+        setrets('hanabank',None, value)
+    else:
+        setrets('hanabank','get price error from hanabank')
+
 def sendtoMBIN(msg):
     infojson = open("info.json","tr")
     info = json.load(infojson)
@@ -92,10 +104,13 @@ def lambda_handler(event, context):
     
     t=threading.Thread(target=fromupbit)
     t3=threading.Thread(target=fromBinance)
+    t4=threading.Thread(target=getKRWUSD)
     t.start()
     t3.start()
+    t4.start()
     t.join()
     t3.join()
+    t4.join()
     sss=[]
     for k in rets:#결과를 합침.
         sss.append(k+' : '+(rets[k]))
