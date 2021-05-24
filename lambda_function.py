@@ -108,12 +108,15 @@ def lambda_handler(event, context):
     global rets
     
     t=threading.Thread(target=fromupbit)
+    # t2=threading.Thread(target=frombitmex)
     t3=threading.Thread(target=fromBinance)
     t4=threading.Thread(target=getKRWUSD)
     t.start()
+    # t2.start()
     t3.start()
     t4.start()
     t.join()
+    # t2.join()
     t3.join()
     t4.join()
     
