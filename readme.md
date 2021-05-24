@@ -29,6 +29,9 @@ https://docs.upbit.com/docs/upbit-quotation-restful-api
 ### bitmex 호가 수신  
 https://www.bitmex.com/api/explorer/#!/OrderBook/OrderBook_getL2
 
+### binance 거래가격 API  
+https://binance-docs.github.io/apidocs/spot/en/#recent-trades-list
+
 ### aws lambda에 layer를 추가해서 requests모듈 사용  
 https://github.com/mthenw/awesome-layers  
 -> https://github.com/keithrozario/Klayers  
@@ -50,6 +53,10 @@ def requestGET(url,param,header=None): #requests 버전.
 
 ### 2020-3-23
 powershell에서 zip으로 압축한후에 aws cli를 이용해서 함수를 업데이트. [update.ps1](update.ps1)  
+
+### 2021-5-24
+바이넨스에서 비트코인의 값을 가지고 옴.
+하나은행의 환율 정보로 김프를 계산해서 출력.
 
 ## 새로 만든 채널 혹은 채팅방의 id를 아는 방법.
 채널이나 채팅방을 만들고 봇을 초대한다.  
