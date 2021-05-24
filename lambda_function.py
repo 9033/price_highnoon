@@ -27,11 +27,14 @@ def reqGET(url,param,header=None):#interface 통일.
 
 rets={}
 
-def setrets(key,val): #리턴값을 전역 변수에 저장. threading이라서 리턴값을 전역변수를 통해 읽음.
+def setrets(key,stringify, value): #리턴값을 전역 변수에 저장. threading이라서 리턴값을 전역변수를 통해 읽음.
     global rets
     cond=threading.Condition()
     cond.acquire()
-    rets[key]=val
+    rets[key]={
+      'stringify':stringify,
+      'value':value,
+    }
     cond.release()
 
 def fromupbit():
@@ -40,8 +43,9 @@ def fromupbit():
     res=reqGET(url,p)
 
     if res['status']==200:
-        jsonRes=json.loads(res['text'])    
-        setrets('upbit','{:,}'.format(int(jsonRes[0]['trade_price'])))
+        jsonRes=json.loads(res['text'])
+        value = int(jsonRes[0]['trade_price'])
+        setrets('upbit','{:,}'.format(value), value)
     else:
         setrets('upbit','get price error from upbit')
 
@@ -54,9 +58,34 @@ def frombitmex():
 
     if res['status']==200:
         jsonRes=json.loads(res['text'])
-        setrets('bitmex','{:,.2f}'.format(float(jsonRes[0]['price'])))
+        value = float(jsonRes[0]['price'])
+        setrets('bitmex','{:,.2f}'.format(value), value)
     else:
         setrets('bitmex','get price error from bitmex')
+
+def fromBinance():
+    p={'symbol':'BTCUSDT','limit':'10'}
+    url='https://api.binance.com/api/v3/trades'
+    res=reqGET(url,p)
+
+    if res['status']==200:
+        jsonRes=json.loads(res['text'])
+        avgTradePrice = sum([float(trade['price']) for trade in jsonRes]) / 10
+        setrets('binance','{:,.2f}'.format(avgTradePrice), avgTradePrice)
+    else:
+        setrets('binance','get price error from binance')
+
+def getKRWUSD():
+    url='https://quotation-api-cdn.dunamu.com/v1/forex/recent'
+    p={'codes':'FRX.KRWUSD'}
+    res=reqGET(url,p)
+
+    if res['status']==200:
+        jsonRes=json.loads(res['text'])
+        value = float(jsonRes[0]['basePrice'])
+        setrets('hanabank',None, value)
+    else:
+        setrets('hanabank','get price error from hanabank')
 
 def sendtoMBIN(msg):
     infojson = open("info.json","tr")
@@ -79,15 +108,32 @@ def lambda_handler(event, context):
     global rets
     
     t=threading.Thread(target=fromupbit)
-    t2=threading.Thread(target=frombitmex)
+    # t2=threading.Thread(target=frombitmex)
+    t3=threading.Thread(target=fromBinance)
+    t4=threading.Thread(target=getKRWUSD)
     t.start()
-    t2.start()
+    # t2.start()
+    t3.start()
+    t4.start()
     t.join()
-    t2.join()
+    # t2.join()
+    t3.join()
+    t4.join()
     
+    # 김프 구하기 (#1)
+    try:
+      KPremium = (rets['upbit']['value'] / (rets['binance']['value'] * rets['hanabank']['value'])) - 1
+      rets['K-premium']={
+        'stringify':'{:,.1f}%'.format(KPremium * 100),
+        'value':KPremium,
+      }
+    except:
+      pass
+
     sss=[]
     for k in rets:#결과를 합침.
-        sss.append(k+' : '+(rets[k]))
+      if rets[k]['stringify']:
+        sss.append(k+' : '+(rets[k]['stringify']))
     priceMsg="\n".join(sss)
     if 'test' not in event:#'test'가 활성화 되면 결과를 텔레그램에 보내지 않음.
         sendtoMBIN(priceMsg)
