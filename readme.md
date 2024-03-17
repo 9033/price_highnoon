@@ -3,7 +3,7 @@
 다른 투자 대상도 마찬가지지만 비트코인의 시세도 매 시간마다 변동하는데요  
 그렇지만 여러 이유로 매 시간마다 시세를 보지 않는 경우에 유용할 거 같아서  
 보통 점심시간이 시작하는 오후 12시(KRT)에 대표적인 거래소 사이트인  
-업비트와 bitmex의 비트코인 시세를 알려주는 채널을 개설 했습니다.  
+업비트와 Binance의 비트코인 시세를 알려주는 채널을 개설 했습니다.  
 
 ![](price_highnoon.png)
 
@@ -12,12 +12,27 @@
 위에 있는 링크를 클릭하면 해당 채널로 들어갈 수 있습니다.
 
 1비트 코인의 값을 보여줄때 단위는  
-upbit는 원(BTC/KRW) bitmex는 달러(BTC/USD)입니다.
+업비트는 원(BTC/KRW) Binance는 달러(BTC/USD)입니다.
 
-하루에 한번 시세는 다음과 같이 bitmex와 upbit에서 받아서  
+하루에 한번 시세는 다음과 같이 Binance와 업비트에서 받아서  
 telegram에 개설된 해당 채널로 보내게 됩니다.  
-![](price_highnoon_info.png)  
-여기서 AWS Lambda는 서버의 역할을 한다고 보면 됩니다.  
+
+```mermaid
+sequenceDiagram
+	par
+		price_highnoon->>Binance API: BTC/USD 요청
+		Binance API->>price_highnoon: BTC/USD
+	and
+		price_highnoon->>두나무 하나은행 API: 원달러 환율 요청
+		두나무 하나은행 API->>price_highnoon: 원달러 환율
+	and
+		price_highnoon->>업비트 API: BTC/KRW 요청
+		업비트 API->>price_highnoon: BTC/KRW
+	end
+	Note over price_highnoon: 김프 구하기
+	price_highnoon->>텔레그램 API: 김프, BTC/KRW, BTC/USD 전송
+	Note over 텔레그램 API: price_highnoon 채널에 출력
+```
 
 ## 파일
 [lambda_function.py](lambda_function.py) : aws lambda에 올라가는 코드  
