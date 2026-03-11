@@ -23,14 +23,10 @@ sequenceDiagram
 		price_highnoon->>Binance API: BTC/USD 요청
 		Binance API->>price_highnoon: BTC/USD
 	and
-		price_highnoon->>두나무 하나은행 API: 원달러 환율 요청
-		두나무 하나은행 API->>price_highnoon: 원달러 환율
-	and
 		price_highnoon->>업비트 API: BTC/KRW 요청
 		업비트 API->>price_highnoon: BTC/KRW
 	end
-	Note over price_highnoon: 김프 구하기
-	price_highnoon->>텔레그램 API: 김프, BTC/KRW, BTC/USD 전송
+	price_highnoon->>텔레그램 API: BTC/KRW, BTC/USD 전송
 	Note over 텔레그램 API: price_highnoon 채널에 출력
 ```
 
@@ -55,7 +51,7 @@ https://github.com/mthenw/awesome-layers
 ## 로그
 ### 2019-11-12
 단순이 get호출이여서 requests대신 빌트인된 urllib를 사용하여 라이브러리 의존도를 줄임.  
-물론 수행시간은 주로 api을 호출하고 대기하는 시간이 대부분이라서 큰 차이가 없다.  
+다만 수행시간은 주로 api을 호출하고 대기하는 시간이 대부분이라서 큰 차이가 없다.  
 
 ```py
 def requestGET(url,param,header=None): #requests 버전.
@@ -70,11 +66,15 @@ def requestGET(url,param,header=None): #requests 버전.
 powershell에서 zip으로 압축한후에 aws cli를 이용해서 함수를 업데이트. [update.ps1](update.ps1)  
 
 ### 2021-5-24
-바이넨스에서 비트코인의 값을 가지고 옴.
-하나은행의 환율 정보로 김프를 계산해서 출력.
+바이넨스에서 비트코인의 값을 가지고 옴.  
+하나은행의 환율 정보로 김프를 계산해서 출력.  
+
+### 2026-3-11
+환율 가지고 와서 김프 계산해서 출력 하는 부분 삭제.  
+코드 개선.  
 
 ## 새로 만든 채널 혹은 채팅방의 id를 아는 방법.
-채널이나 채팅방을 만들고 봇을 초대한다.  
-새로 만든 곳에서 아무 메세지나 입력한다.  
-getUpdate로 새로 업데이트된 메시지를 받는다.  
-아까 입력한 메시지에 있는 id가 새로 만든 채널 혹은 채팅방의 id임.  
+1. 채널이나 채팅방을 만들고 봇을 초대한다.  
+2. 새로 만든 곳에서 아무 메세지나 입력한다.  
+3. getUpdate로 새로 업데이트된 메시지를 받는다.  
+4. 아까 입력한 메시지에 있는 id가 새로 만든 채널 혹은 채팅방의 id임.  
